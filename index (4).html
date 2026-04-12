@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Portfolio — AI Engineer · SaaS Builder · Researcher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Departure+Mono&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════ */
+:root{
+  --bg:#07080d;
+  --s1:#0d0f16;
+  --s2:#12141e;
+  --s3:#181b26;
+  --border:rgba(255,255,255,.07);
+  --border2:rgba(255,255,255,.13);
+  --teal:#00e5c8;
+  --teal2:rgba(0,229,200,.12);
+  --purple:#8b7cf8;
+  --amber:#f5a623;
+  --pink:#f06292;
+  --text:#e8edf8;
+  --text2:#8a96b4;
+  --text3:#3d4a62;
+  --serif:'Instrument Serif',Georgia,serif;
+  --mono:'Departure Mono','Courier New',monospace;
+  --sans:'DM Sans',system-ui,sans-serif;
+}
+
+/* ═══════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);
+  overflow-x:hidden;cursor:none}
+
+/* Custom cursor */
+#cursor{position:fixed;width:12px;height:12px;border:1.5px solid var(--teal);
+  border-radius:50%;pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s;
+  mix-blend-mode:difference}
+#cursor-trail{position:fixed;width:32px;height:32px;border:1px solid rgba(0,229,200,.25);
+  border-radius:50%;pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);transition:all .12s ease}
+body:hover #cursor{background:rgba(0,229,200,.15)}
+
+/* ═══════════════════════════════════════════
+   NOISE TEXTURE overlay
+═══════════════════════════════════════════ */
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  opacity:.4}
+
+/* ═══════════════════════════════════════════
+   GRID CANVAS BG
+═══════════════════════════════════════════ */
+#grid-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.55}
+
+/* ═══════════════════════════════════════════
+   LAYOUT WRAPPER
+═══════════════════════════════════════════ */
+.wrap{position:relative;z-index:1;max-width:1220px;margin:0 auto;padding:0 48px}
+@media(max-width:768px){.wrap{padding:0 20px}}
+
+/* ═══════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════ */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;
+  border-bottom:1px solid var(--border);
+  background:rgba(7,8,13,.82);backdrop-filter:blur(20px)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;
+  height:58px;max-width:1220px;margin:0 auto;padding:0 48px}
+.nav-logo{font-family:var(--mono);font-size:13px;letter-spacing:.12em;
+  color:var(--teal);text-transform:uppercase}
+.nav-logo span{color:var(--text3)}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--text3);text-decoration:none;
+  transition:color .2s}
+.nav-links a:hover{color:var(--teal)}
+.nav-status{font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+  color:var(--teal);text-transform:uppercase;
+  display:flex;align-items:center;gap:7px}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);
+  animation:pulse-dot 2.2s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+@media(max-width:768px){.nav-links{display:none}.nav-inner{padding:0 20px}}
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+#hero{min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;padding-top:58px;position:relative;overflow:hidden}
+.hero-inner{display:flex;align-items:center;justify-content:space-between;gap:60px}
+.hero-content{flex:1;min-width:0}
+.hero-photo-col{flex-shrink:0;opacity:0;animation:fadeIn 1s .5s forwards}
+.hero-photo-wrap{position:relative;width:300px;height:360px}
+.hero-photo-wrap::before{content:'';position:absolute;inset:-2px;
+  background:linear-gradient(135deg,var(--teal),var(--purple),transparent);
+  border-radius:6px;z-index:0}
+.hero-photo-wrap::after{content:'';position:absolute;bottom:-12px;right:-12px;
+  width:100%;height:100%;border:1px solid rgba(0,229,200,.2);
+  border-radius:6px;z-index:-1}
+.hero-photo{width:100%;height:100%;object-fit:cover;border-radius:5px;
+  position:relative;z-index:1;display:block;
+  filter:grayscale(15%) contrast(1.05)}
+@media(max-width:900px){
+  .hero-inner{flex-direction:column-reverse;gap:40px;text-align:center}
+  .hero-photo-wrap{width:220px;height:264px}
+  .hero-eyebrow,.hero-title-row,.hero-cta,.hero-stats{justify-content:center}
+}
+@media(max-width:580px){.hero-photo-wrap{width:180px;height:216px}}
+.hero-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--teal);margin-bottom:28px;
+  display:flex;align-items:center;gap:10px;
+  opacity:0;animation:fadeUp .7s .2s forwards}
+.eyebrow-line{width:36px;height:1px;background:var(--teal)}
+.hero-name{font-family:var(--serif);font-size:clamp(56px,7vw,96px);
+  font-weight:400;line-height:.95;letter-spacing:-.02em;color:var(--text);
+  opacity:0;animation:fadeUp .7s .4s forwards}
+.hero-name em{color:var(--teal);font-style:italic}
+.hero-title-row{display:flex;align-items:flex-end;gap:20px;margin-top:20px;
+  flex-wrap:wrap;opacity:0;animation:fadeUp .7s .6s forwards}
+.hero-role{font-family:var(--mono);font-size:13px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--text3);padding:6px 14px;
+  border:1px solid var(--border);border-radius:2px}
+.hero-role.active{border-color:rgba(0,229,200,.3);color:var(--teal);
+  background:rgba(0,229,200,.04)}
+.hero-desc{max-width:560px;font-size:16px;font-weight:300;line-height:1.8;
+  color:var(--text2);margin-top:36px;
+  opacity:0;animation:fadeUp .7s .8s forwards}
+.hero-desc strong{color:var(--text);font-weight:400}
+.hero-cta{display:flex;gap:14px;margin-top:40px;
+  opacity:0;animation:fadeUp .7s 1s forwards}
+.btn-primary{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;padding:13px 28px;border-radius:2px;
+  background:var(--teal);color:#05070f;border:none;cursor:none;
+  transition:background .2s,transform .15s}
+.btn-primary:hover{background:#00cdb4;transform:translateY(-1px)}
+.btn-ghost{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;padding:13px 28px;border-radius:2px;
+  background:transparent;color:var(--teal);
+  border:1px solid rgba(0,229,200,.3);cursor:none;transition:border-color .2s,transform .15s}
+.btn-ghost:hover{border-color:var(--teal);transform:translateY(-1px)}
+
+/* hero stats */
+.hero-stats{display:flex;gap:0;margin-top:72px;
+  border:1px solid var(--border);border-radius:4px;overflow:hidden;
+  max-width:560px;opacity:0;animation:fadeUp .7s 1.1s forwards}
+.hstat{flex:1;padding:18px 20px;border-right:1px solid var(--border);
+  text-align:center}
+.hstat:last-child{border-right:none}
+.hstat-n{font-family:var(--serif);font-size:32px;color:var(--teal);line-height:1}
+.hstat-l{font-family:var(--mono);font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--text3);margin-top:5px}
+
+/* hero side accent */
+.hero-right{position:absolute;right:-60px;top:50%;transform:translateY(-50%);
+  font-family:var(--mono);font-size:10px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--text3);
+  writing-mode:vertical-rl;line-height:1;
+  opacity:0;animation:fadeIn 1s 1.4s forwards}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ═══════════════════════════════════════════
+   SECTION HEADERS
+═══════════════════════════════════════════ */
+.section{padding:100px 0}
+.sec-label{font-family:var(--mono);font-size:10px;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--teal);margin-bottom:12px;
+  display:flex;align-items:center;gap:10px}
+.sec-label::before{content:'';width:24px;height:1px;background:var(--teal)}
+.sec-title{font-family:var(--serif);font-size:clamp(36px,4vw,56px);
+  font-weight:400;line-height:1.05;letter-spacing:-.02em;color:var(--text)}
+.sec-title em{font-style:italic;color:var(--teal)}
+.sec-sub{font-family:var(--sans);font-size:15px;font-weight:300;
+  color:var(--text2);margin-top:12px;max-width:520px;line-height:1.75}
+
+/* ═══════════════════════════════════════════
+   SERVICES
+═══════════════════════════════════════════ */
+#services{background:var(--s1);border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border)}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--border);margin-top:52px;border:1px solid var(--border)}
+.svc{background:var(--s1);padding:36px 32px;position:relative;overflow:hidden;
+  transition:background .3s;cursor:none}
+.svc:hover{background:var(--s2)}
+.svc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  opacity:0;transition:opacity .3s}
+.svc:nth-child(1)::before{background:linear-gradient(90deg,var(--teal),transparent)}
+.svc:nth-child(2)::before{background:linear-gradient(90deg,var(--purple),transparent)}
+.svc:nth-child(3)::before{background:linear-gradient(90deg,var(--amber),transparent)}
+.svc:nth-child(4)::before{background:linear-gradient(90deg,var(--pink),transparent)}
+.svc:nth-child(5)::before{background:linear-gradient(90deg,var(--teal),transparent)}
+.svc:hover::before{opacity:1}
+.svc-num{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  color:var(--text3);margin-bottom:20px}
+.svc-icon{font-size:28px;margin-bottom:16px;display:block}
+.svc-title{font-family:var(--serif);font-size:22px;font-weight:400;
+  color:var(--text);margin-bottom:10px;line-height:1.2}
+.svc-desc{font-family:var(--sans);font-size:13px;font-weight:300;
+  color:var(--text2);line-height:1.7}
+.svc-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
+.tag{font-family:var(--mono);font-size:9px;letter-spacing:.1em;
+  text-transform:uppercase;padding:3px 9px;border-radius:2px;
+  border:1px solid var(--border2);color:var(--text3)}
+@media(max-width:900px){.services-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:580px){.services-grid{grid-template-columns:1fr}}
+
+/* ═══════════════════════════════════════════
+   PRODUCTS — SHIPPED SAAS
+═══════════════════════════════════════════ */
+#products .sec-header{display:flex;align-items:flex-end;justify-content:space-between;
+  margin-bottom:48px;flex-wrap:wrap;gap:16px}
+.product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.product-card{background:var(--s2);border:1px solid var(--border);border-radius:6px;
+  padding:28px;cursor:none;position:relative;overflow:hidden;
+  transition:border-color .3s,transform .3s,background .3s;
+  text-decoration:none;display:block}
+.product-card:hover{border-color:rgba(0,229,200,.35);transform:translateY(-4px);background:var(--s3)}
+.product-card::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(0,229,200,.03) 0%,transparent 60%);
+  opacity:0;transition:opacity .3s}
+.product-card:hover::after{opacity:1}
+/* top colour bar */
+.product-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:6px 6px 0 0}
+.product-card.c-teal::before{background:linear-gradient(90deg,var(--teal),transparent)}
+.product-card.c-purple::before{background:linear-gradient(90deg,var(--purple),transparent)}
+.product-card.c-amber::before{background:linear-gradient(90deg,var(--amber),transparent)}
+.product-card.c-pink::before{background:linear-gradient(90deg,var(--pink),transparent)}
+.pc-status{font-family:var(--mono);font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:7px}
+.pc-status.live{color:var(--teal)}.pc-status.live .sdot{background:var(--teal)}
+.pc-status.wip{color:var(--amber)}.pc-status.wip .sdot{background:var(--amber)}
+.sdot{width:5px;height:5px;border-radius:50%;animation:pulse-dot 2s infinite}
+.pc-name{font-family:var(--serif);font-size:26px;font-weight:400;
+  color:var(--text);letter-spacing:-.01em;margin-bottom:6px;line-height:1.1}
+.pc-cat{font-family:var(--mono);font-size:9px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--text3);margin-bottom:14px}
+.pc-desc{font-family:var(--sans);font-size:13px;font-weight:300;
+  color:var(--text2);line-height:1.7;margin-bottom:18px}
+.pc-stack{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:18px}
+.stack-tag{font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;
+  padding:2px 8px;border-radius:2px;background:rgba(255,255,255,.04);
+  border:1px solid var(--border);color:var(--text3)}
+.pc-link{font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--teal);
+  display:flex;align-items:center;gap:6px}
+.pc-link::after{content:'→';transition:transform .2s}
+.product-card:hover .pc-link::after{transform:translateX(4px)}
+/* featured (wide) card */
+.product-card.featured{grid-column:span 2;display:grid;
+  grid-template-columns:1fr 1fr;gap:28px}
+.product-card.featured .pc-right{
+  background:var(--s1);border-radius:4px;padding:16px;
+  border:1px solid var(--border);display:flex;flex-direction:column;gap:10px}
+.metric-row{display:flex;flex-direction:column;gap:4px}
+.metric-label{font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--text3)}
+.metric-val{font-family:var(--serif);font-size:22px;color:var(--teal)}
+@media(max-width:900px){.product-grid{grid-template-columns:1fr 1fr}.product-card.featured{grid-column:span 2;display:block}}
+@media(max-width:580px){.product-grid{grid-template-columns:1fr}.product-card.featured{grid-column:span 1}}
+
+/* ═══════════════════════════════════════════
+   PROJECTS
+═══════════════════════════════════════════ */
+#projects{background:var(--s1);border-top:1px solid var(--border)}
+.projects-list{margin-top:48px;display:flex;flex-direction:column;gap:0}
+.proj-item{display:grid;grid-template-columns:60px 1fr auto;gap:24px;
+  align-items:start;padding:28px 0;
+  border-bottom:1px solid var(--border);cursor:none;
+  transition:background .2s;position:relative}
+.proj-item::before{content:'';position:absolute;left:-48px;right:-48px;top:0;bottom:0;
+  background:rgba(255,255,255,.015);opacity:0;transition:opacity .2s;z-index:-1}
+.proj-item:hover::before{opacity:1}
+.proj-num{font-family:var(--mono);font-size:12px;letter-spacing:.1em;
+  color:var(--text3);padding-top:4px}
+.proj-body{}
+.proj-title{font-family:var(--serif);font-size:22px;font-weight:400;
+  color:var(--text);letter-spacing:-.01em;margin-bottom:6px}
+.proj-desc{font-family:var(--sans);font-size:13px;font-weight:300;
+  color:var(--text2);line-height:1.65;max-width:640px;margin-bottom:12px}
+.proj-tags{display:flex;gap:6px;flex-wrap:wrap}
+.proj-tag{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;
+  text-transform:uppercase;padding:2px 9px;border-radius:2px;
+  border:1px solid var(--border2);color:var(--text3)}
+.proj-tag.hi{border-color:rgba(0,229,200,.25);color:var(--teal)}
+.proj-arrow{font-size:16px;color:var(--text3);padding-top:6px;
+  transition:color .2s,transform .2s}
+.proj-item:hover .proj-arrow{color:var(--teal);transform:translateX(4px)}
+@media(max-width:640px){.proj-item{grid-template-columns:40px 1fr auto;gap:14px}}
+
+/* ═══════════════════════════════════════════
+   BOOKS
+═══════════════════════════════════════════ */
+#books{border-top:1px solid var(--border)}
+.books-intro{max-width:600px}
+.books-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:52px}
+.book-card{background:var(--s2);border:1px solid var(--border);border-radius:6px;
+  overflow:hidden;cursor:none;transition:border-color .3s,transform .25s}
+.book-card:hover{border-color:rgba(139,124,248,.4);transform:translateY(-4px)}
+.book-cover{height:200px;display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden}
+.book-card:nth-child(1) .book-cover{background:linear-gradient(135deg,#0d0f16 0%,#1a1040 50%,#0d1020 100%)}
+.book-card:nth-child(2) .book-cover{background:linear-gradient(135deg,#0a0f14 0%,#0d2030 50%,#0a1520 100%)}
+.book-cover-art{font-family:var(--serif);font-size:72px;opacity:.12;
+  position:absolute;user-select:none}
+.book-cover-title{font-family:var(--serif);font-size:22px;font-weight:400;
+  color:var(--text);text-align:center;max-width:200px;line-height:1.2;
+  position:relative;z-index:1}
+.book-cover-title em{color:var(--purple);font-style:italic;display:block}
+.book-cover-spine{position:absolute;left:0;top:0;bottom:0;width:5px}
+.book-card:nth-child(1) .book-cover-spine{background:var(--teal)}
+.book-card:nth-child(2) .book-cover-spine{background:var(--purple)}
+.book-body{padding:24px 26px}
+.book-badge{font-family:var(--mono);font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;margin-bottom:10px;display:inline-flex;
+  align-items:center;gap:7px;padding:3px 10px;border-radius:2px}
+.book-badge.coming{background:rgba(139,124,248,.1);color:var(--purple);
+  border:1px solid rgba(139,124,248,.25)}
+.book-badge.writing{background:rgba(245,166,35,.08);color:var(--amber);
+  border:1px solid rgba(245,166,35,.22)}
+.book-title{font-family:var(--serif);font-size:20px;font-weight:400;
+  color:var(--text);margin-bottom:8px;line-height:1.2}
+.book-desc{font-family:var(--sans);font-size:13px;font-weight:300;
+  color:var(--text2);line-height:1.7;margin-bottom:16px}
+.book-topics{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.book-topic{font-family:var(--mono);font-size:8.5px;letter-spacing:.09em;
+  padding:2px 8px;border-radius:2px;
+  background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text3)}
+.book-cta{font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--purple);
+  display:flex;align-items:center;gap:6px}
+@media(max-width:640px){.books-grid{grid-template-columns:1fr}}
+
+/* ═══════════════════════════════════════════
+   CONTACT / CTA
+═══════════════════════════════════════════ */
+#contact{background:var(--s1);border-top:1px solid var(--border);text-align:center}
+.contact-inner{max-width:680px;margin:0 auto;display:flex;
+  flex-direction:column;align-items:center}
+.contact-pre{font-family:var(--mono);font-size:10px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--teal);margin-bottom:20px;
+  display:flex;align-items:center;gap:10px}
+.contact-pre::before,.contact-pre::after{content:'';flex:1;height:1px;background:var(--border2)}
+.contact-heading{font-family:var(--serif);font-size:clamp(36px,5vw,64px);
+  font-weight:400;line-height:1.0;letter-spacing:-.02em;margin-bottom:18px}
+.contact-heading em{font-style:italic;color:var(--teal)}
+.contact-sub{font-family:var(--sans);font-size:15px;font-weight:300;
+  color:var(--text2);line-height:1.75;margin-bottom:40px}
+.contact-links{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-bottom:52px}
+.contact-link{font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;padding:11px 24px;border-radius:2px;
+  border:1px solid var(--border2);color:var(--text2);text-decoration:none;
+  transition:border-color .2s,color .2s}
+.contact-link:hover{border-color:var(--teal);color:var(--teal)}
+.contact-link.primary{background:var(--teal);color:#05070f;border-color:var(--teal);
+  font-weight:500}
+.contact-link.primary:hover{background:#00cdb4}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+footer{border-top:1px solid var(--border);padding:28px 0}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:12px;max-width:1220px;margin:0 auto;padding:0 48px}
+.footer-brand{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--text3)}
+.footer-brand span{color:var(--teal)}
+.footer-copy{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--text3)}
+@media(max-width:640px){.footer-inner{padding:0 20px;flex-direction:column;text-align:center}}
+
+/* ═══════════════════════════════════════════
+   MODAL
+═══════════════════════════════════════════ */
+#modal-overlay{position:fixed;inset:0;z-index:200;
+  background:rgba(7,8,13,.88);backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s}
+#modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--s2);border:1px solid var(--border2);border-radius:8px;
+  max-width:680px;width:90%;max-height:85vh;overflow-y:auto;
+  transform:translateY(16px);transition:transform .3s;position:relative}
+#modal-overlay.open .modal{transform:translateY(0)}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;
+  color:var(--text3);font-size:20px;cursor:none;transition:color .2s}
+.modal-close:hover{color:var(--teal)}
+.modal-bar{height:3px;border-radius:8px 8px 0 0}
+.modal-body{padding:36px 36px 32px}
+.modal-badge{font-family:var(--mono);font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;margin-bottom:14px;display:inline-flex;
+  align-items:center;gap:7px}
+.modal-badge.live{color:var(--teal)}.modal-badge.live .sdot{background:var(--teal)}
+.modal-badge.wip{color:var(--amber)}.modal-badge.wip .sdot{background:var(--amber)}
+.modal-name{font-family:var(--serif);font-size:36px;font-weight:400;
+  color:var(--text);margin-bottom:4px}
+.modal-cat{font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--text3);margin-bottom:18px}
+.modal-desc{font-family:var(--sans);font-size:14px;font-weight:300;
+  color:var(--text2);line-height:1.8;margin-bottom:22px}
+.modal-section-title{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--text3);margin-bottom:10px;margin-top:20px}
+.modal-features{display:flex;flex-direction:column;gap:8px}
+.modal-feat{display:flex;gap:12px;align-items:flex-start;
+  font-family:var(--sans);font-size:13px;font-weight:300;color:var(--text2);line-height:1.6}
+.modal-feat::before{content:'·';color:var(--teal);font-size:18px;line-height:1.2;flex-shrink:0}
+.modal-stack{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.modal-actions{display:flex;gap:12px;margin-top:26px;flex-wrap:wrap}
+
+/* ═══════════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════════ */
+.reveal{opacity:1;transform:none}
+.js-loaded .reveal{opacity:0;transform:translateY(28px);
+  transition:opacity .7s ease,transform .7s ease}
+.js-loaded .reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ═══════════════════════════════════════════
+   TICKER
+═══════════════════════════════════════════ */
+.ticker-wrap{border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  background:var(--s1);overflow:hidden;padding:10px 0;white-space:nowrap;
+  position:relative}
+.ticker-wrap::before,.ticker-wrap::after{content:'';position:absolute;
+  top:0;bottom:0;width:80px;z-index:2}
+.ticker-wrap::before{left:0;background:linear-gradient(90deg,var(--s1),transparent)}
+.ticker-wrap::after{right:0;background:linear-gradient(-90deg,var(--s1),transparent)}
+.ticker-track{display:inline-flex;animation:ticker 38s linear infinite}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-item{font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--text3);padding:0 36px;
+  display:inline-flex;align-items:center;gap:10px}
+.ticker-dot{color:var(--teal);font-size:8px}
+
+/* scrollbar */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+<canvas id="grid-canvas"></canvas>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">PSX<span>::</span>Portfolio</div>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#products">Products</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#books">Books</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-status"><span class="status-dot"></span>Available for Projects</div>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-eyebrow">
+          <span class="eyebrow-line"></span>
+          AI Engineer · SaaS Builder · Researcher
+        </div>
+        <div class="hero-name">
+          Building systems<br/>that <em>think,</em><br/>ship &amp; scale.
+        </div>
+        <div class="hero-title-row">
+          <span class="hero-role active">AI Systems</span>
+          <span class="hero-role">SaaS Engineering</span>
+          <span class="hero-role">Data Analytics</span>
+          <span class="hero-role">Academic Writing</span>
+          <span class="hero-role">Strategy</span>
+        </div>
+        <p class="hero-desc">
+          I design and build <strong>AI-powered products</strong>, rigorous
+          <strong>data pipelines</strong>, and <strong>SaaS platforms</strong> —
+          from first-principles research to shipped software. Five products launched.
+          Books in the making.
+        </p>
+        <div class="hero-cta">
+          <button class="btn-primary" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">View Products</button>
+          <button class="btn-ghost" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Work Together</button>
+        </div>
+        <div class="hero-stats">
+          <div class="hstat"><div class="hstat-n">5</div><div class="hstat-l">Products Shipped</div></div>
+          <div class="hstat"><div class="hstat-n">2</div><div class="hstat-l">Books in Progress</div></div>
+          <div class="hstat"><div class="hstat-n">5+</div><div class="hstat-l">Domains Mastered</div></div>
+        </div>
+      </div>
+      <div class="hero-photo-col">
+        <div class="hero-photo-wrap">
+          <img class="hero-photo" src="assets/Bob.png" alt="Bob"/>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">AI · SaaS · Research · Strategy</div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track" id="ticker-track"></div>
+</div>
+
+<!-- ══ SERVICES ══ -->
+<section id="services" class="section">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-label">What I Do</div>
+      <h2 class="sec-title">Five domains of <em>deep expertise</em></h2>
+      <p class="sec-sub">End-to-end capability across the full stack — from system design to published research.</p>
+    </div>
+    <div class="services-grid reveal" style="transition-delay:.15s">
+      <div class="svc">
+        <div class="svc-num">01</div>
+        <span class="svc-icon">🚀</span>
+        <h3 class="svc-title">AI System Design &amp; Development</h3>
+        <p class="svc-desc">Architecting and building production-grade AI systems — from LLM integrations and RAG pipelines to custom ML models. End-to-end: data, model, API, and deployment.</p>
+        <div class="svc-tags">
+          <span class="tag">LLMs</span><span class="tag">RAG</span><span class="tag">ML Pipelines</span><span class="tag">GPT-4</span><span class="tag">Python</span>
+        </div>
+      </div>
+      <div class="svc">
+        <div class="svc-num">02</div>
+        <span class="svc-icon">💰</span>
+        <h3 class="svc-title">SaaS Product Engineering</h3>
+        <p class="svc-desc">Full-stack SaaS development — product architecture, backend APIs, billing systems, access control, and interactive frontends. Ship fast, scale smart.</p>
+        <div class="svc-tags">
+          <span class="tag">Streamlit</span><span class="tag">FastAPI</span><span class="tag">Google Sheets</span><span class="tag">Stripe</span><span class="tag">Deployment</span>
+        </div>
+      </div>
+      <div class="svc">
+        <div class="svc-num">03</div>
+        <span class="svc-icon">📈</span>
+        <h3 class="svc-title">Market Research &amp; Data Analytics</h3>
+        <p class="svc-desc">Rigorous quantitative analysis — panel econometrics, statistical modelling, market sizing, and data visualisation. From raw datasets to actionable insights.</p>
+        <div class="svc-tags">
+          <span class="tag">Panel Regression</span><span class="tag">Econometrics</span><span class="tag">Plotly</span><span class="tag">Pandas</span><span class="tag">R</span>
+        </div>
+      </div>
+      <div class="svc">
+        <div class="svc-num">04</div>
+        <span class="svc-icon">📝</span>
+        <h3 class="svc-title">Academic &amp; Technical Writing</h3>
+        <p class="svc-desc">Publication-ready research papers, technical documentation, and long-form books. Translating complex systems and findings into clear, compelling prose.</p>
+        <div class="svc-tags">
+          <span class="tag">Research Papers</span><span class="tag">Technical Docs</span><span class="tag">Books</span><span class="tag">Reports</span>
+        </div>
+      </div>
+      <div class="svc">
+        <div class="svc-num">05</div>
+        <span class="svc-icon">🧩</span>
+        <h3 class="svc-title">Strategic &amp; Business Consulting</h3>
+        <p class="svc-desc">Strategic frameworks for AI-driven products and research ventures — go-to-market, competitive analysis, product-market fit, and growth modelling.</p>
+        <div class="svc-tags">
+          <span class="tag">GTM Strategy</span><span class="tag">Product Strategy</span><span class="tag">Market Analysis</span><span class="tag">Roadmaps</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PRODUCTS ══ -->
+<section id="products" class="section">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-header">
+        <div>
+          <div class="sec-label">Shipped SaaS Products</div>
+          <h2 class="sec-title">Five products. <em>All live.</em></h2>
+        </div>
+        <p class="sec-sub" style="margin-top:0">From econometrics platforms to AI productivity tools — fully engineered and deployed.</p>
+      </div>
+    </div>
+    <div class="product-grid reveal" style="transition-delay:.1s">
+
+      <!-- PanelStatX — featured -->
+      <div class="product-card featured c-teal" onclick="openModal('panelstatx')">
+        <div class="pc-left">
+          <div class="pc-status live"><span class="sdot"></span>Live</div>
+          <div class="pc-name">PanelStatX</div>
+          <div class="pc-cat">Panel Regression Analysis Platform</div>
+          <div class="pc-desc">Production-grade panel econometrics — Fixed Effects, Random Effects, First-Difference, Hausman test, Breusch-Pagan diagnostics, and GPT-4 AI interpretation. Export publishable DOCX reports.</div>
+          <div class="pc-stack">
+            <span class="stack-tag">Python</span><span class="stack-tag">Streamlit</span>
+            <span class="stack-tag">GPT-4</span><span class="stack-tag">GSheets API</span>
+            <span class="stack-tag">Econometrics</span>
+          </div>
+          <div class="pc-link">Explore Product</div>
+        </div>
+        <div class="pc-right">
+          <div class="metric-row"><div class="metric-label">Estimators</div><div class="metric-val">4</div></div>
+          <div class="metric-row"><div class="metric-label">Diagnostic Tests</div><div class="metric-val">4+</div></div>
+          <div class="metric-row"><div class="metric-label">AI Engine</div><div class="metric-val" style="font-size:16px">GPT-4o</div></div>
+          <div class="metric-row"><div class="metric-label">Output</div><div class="metric-val" style="font-size:14px">DOCX Reports</div></div>
+          <div class="metric-row"><div class="metric-label">Auth</div><div class="metric-val" style="font-size:14px">Key + Credits</div></div>
+        </div>
+      </div>
+
+      <!-- DataSynthX -->
+      <div class="product-card c-purple" onclick="openModal('datasynthx')">
+        <div class="pc-status live"><span class="sdot"></span>Live</div>
+        <div class="pc-name">DataSynthX</div>
+        <div class="pc-cat">Synthetic Data Generation Platform</div>
+        <div class="pc-desc">AI-powered synthetic dataset generation for researchers and ML engineers. Schema-aware, statistically faithful, privacy-preserving data at scale.</div>
+        <div class="pc-stack">
+          <span class="stack-tag">Python</span><span class="stack-tag">Streamlit</span>
+          <span class="stack-tag">AI/ML</span><span class="stack-tag">Statistics</span>
+        </div>
+        <div class="pc-link">Explore Product</div>
+      </div>
+
+      <!-- Achievit -->
+      <div class="product-card c-amber" onclick="openModal('achievit')">
+        <div class="pc-status live"><span class="sdot"></span>Live</div>
+        <div class="pc-name">Achievit</div>
+        <div class="pc-cat">Goal Tracking &amp; Productivity SaaS</div>
+        <div class="pc-desc">Intelligent goal-setting and progress tracking platform. AI-assisted milestone decomposition, habit reinforcement, and performance analytics for ambitious professionals.</div>
+        <div class="pc-stack">
+          <span class="stack-tag">Full-Stack</span><span class="stack-tag">AI</span>
+          <span class="stack-tag">Analytics</span>
+        </div>
+        <div class="pc-link">Explore Product</div>
+      </div>
+
+      <!-- CaptAI -->
+      <div class="product-card c-teal" onclick="openModal('captai')">
+        <div class="pc-status live"><span class="sdot"></span>Live</div>
+        <div class="pc-name">CaptAI</div>
+        <div class="pc-cat">AI Captioning &amp; Content Intelligence</div>
+        <div class="pc-desc">AI-powered captioning, transcription, and content intelligence tool. Multi-format input, context-aware output, and automated content summarisation at production scale.</div>
+        <div class="pc-stack">
+          <span class="stack-tag">LLMs</span><span class="stack-tag">NLP</span>
+          <span class="stack-tag">Whisper</span><span class="stack-tag">API</span>
+        </div>
+        <div class="pc-link">Explore Product</div>
+      </div>
+
+      <!-- FinRisk-ML -->
+      <div class="product-card c-pink" onclick="openModal('finriskml')">
+        <div class="pc-status live"><span class="sdot"></span>Live</div>
+        <div class="pc-name">FinRisk-ML</div>
+        <div class="pc-cat">Financial Risk Intelligence Platform</div>
+        <div class="pc-desc">Machine learning-powered financial risk assessment. Credit risk modelling, portfolio risk analysis, scenario simulation, and explainable AI risk reports for financial analysts.</div>
+        <div class="pc-stack">
+          <span class="stack-tag">ML</span><span class="stack-tag">XGBoost</span>
+          <span class="stack-tag">Finance</span><span class="stack-tag">Explainable AI</span>
+        </div>
+        <div class="pc-link">Explore Product</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ PROJECTS ══ -->
+<section id="projects" class="section">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-label">Selected Work</div>
+      <h2 class="sec-title">Research &amp; <em>consulting projects</em></h2>
+      <p class="sec-sub">A selection of research, data, and strategy engagements across sectors.</p>
+    </div>
+    <div class="projects-list reveal" style="transition-delay:.12s">
+
+      <div class="proj-item">
+        <div class="proj-num">01</div>
+        <div class="proj-body">
+          <div class="proj-title">Panel Econometrics: Firm-Level Productivity Analysis</div>
+          <div class="proj-desc">Full panel regression study examining determinants of total factor productivity across 200+ firms over 10 years. Fixed Effects estimation with Hausman validation, heteroskedasticity testing, and DOCX report output.</div>
+          <div class="proj-tags"><span class="proj-tag hi">Econometrics</span><span class="proj-tag hi">PanelStatX</span><span class="proj-tag">Fixed Effects</span><span class="proj-tag">Python</span></div>
+        </div>
+        <div class="proj-arrow">→</div>
+      </div>
+
+      <div class="proj-item">
+        <div class="proj-num">02</div>
+        <div class="proj-body">
+          <div class="proj-title">AI Market Landscape Report — Emerging Economies</div>
+          <div class="proj-desc">Comprehensive market research report mapping the AI adoption landscape across Sub-Saharan African markets. Quantitative sizing, competitive dynamics, and strategic entry frameworks.</div>
+          <div class="proj-tags"><span class="proj-tag hi">Market Research</span><span class="proj-tag hi">Strategy</span><span class="proj-tag">AI Industry</span><span class="proj-tag">Report Writing</span></div>
+        </div>
+        <div class="proj-arrow">→</div>
+      </div>
+
+      <div class="proj-item">
+        <div class="proj-num">03</div>
+        <div class="proj-body">
+          <div class="proj-title">Credit Risk Modelling with Explainable ML</div>
+          <div class="proj-desc">Developed an XGBoost-based credit default prediction system with SHAP explanations for a financial services client. Achieved 91% AUC with full model interpretability audit trail.</div>
+          <div class="proj-tags"><span class="proj-tag hi">FinRisk-ML</span><span class="proj-tag hi">ML</span><span class="proj-tag">XGBoost</span><span class="proj-tag">SHAP</span><span class="proj-tag">Finance</span></div>
+        </div>
+        <div class="proj-arrow">→</div>
+      </div>
+
+      <div class="proj-item">
+        <div class="proj-num">04</div>
+        <div class="proj-body">
+          <div class="proj-title">Synthetic Training Data Pipeline for NLP Tasks</div>
+          <div class="proj-desc">Designed and deployed a synthetic data generation pipeline producing statistically faithful text datasets for NLP model fine-tuning. Privacy-preserving, schema-aware, at 100K+ record scale.</div>
+          <div class="proj-tags"><span class="proj-tag hi">DataSynthX</span><span class="proj-tag hi">NLP</span><span class="proj-tag">Synthetic Data</span><span class="proj-tag">ML Engineering</span></div>
+        </div>
+        <div class="proj-arrow">→</div>
+      </div>
+
+      <div class="proj-item">
+        <div class="proj-num">05</div>
+        <div class="proj-body">
+          <div class="proj-title">SaaS Go-to-Market Strategy — AI Productivity Tool</div>
+          <div class="proj-desc">Built end-to-end GTM playbook for an AI productivity startup — ICP definition, pricing architecture, channel strategy, and 90-day launch roadmap. Product launched within target timeline.</div>
+          <div class="proj-tags"><span class="proj-tag hi">Strategy</span><span class="proj-tag hi">SaaS</span><span class="proj-tag">GTM</span><span class="proj-tag">Pricing</span><span class="proj-tag">Roadmap</span></div>
+        </div>
+        <div class="proj-arrow">→</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ BOOKS ══ -->
+<section id="books" class="section">
+  <div class="wrap">
+    <div class="reveal books-intro">
+      <div class="sec-label">Book Catalogue</div>
+      <h2 class="sec-title">Career launch <em>guides</em></h2>
+      <p class="sec-sub">Practical books bridging the gap between ambition and execution — written for the next generation of tech builders and AI professionals.</p>
+    </div>
+    <div class="books-grid reveal" style="transition-delay:.15s">
+
+      <div class="book-card">
+        <div class="book-cover">
+          <div class="book-cover-spine"></div>
+          <div class="book-cover-art">{ }</div>
+          <div class="book-cover-title">The Tech<em>Blueprint</em></div>
+        </div>
+        <div class="book-body">
+          <span class="book-badge writing"><span style="width:5px;height:5px;border-radius:50%;background:var(--amber);display:inline-block"></span>Writing in Progress</span>
+          <div class="book-title">The Tech Blueprint</div>
+          <div class="book-desc">A systematic roadmap for breaking into tech — from foundational skills to landing your first role. Covers CS fundamentals, portfolio building, interview systems, and navigating the modern hiring landscape.</div>
+          <div class="book-topics">
+            <span class="book-topic">Career Frameworks</span>
+            <span class="book-topic">Portfolio Building</span>
+            <span class="book-topic">Technical Skills</span>
+            <span class="book-topic">Job Search</span>
+          </div>
+          <div class="book-cta">Notify Me on Launch →</div>
+        </div>
+      </div>
+
+      <div class="book-card">
+        <div class="book-cover">
+          <div class="book-cover-spine"></div>
+          <div class="book-cover-art">✦</div>
+          <div class="book-cover-title">Launch Your Career<em>in AI</em></div>
+        </div>
+        <div class="book-body">
+          <span class="book-badge coming"><span style="width:5px;height:5px;border-radius:50%;background:var(--purple);display:inline-block"></span>Coming Soon</span>
+          <div class="book-title">Launch Your Career in AI</div>
+          <div class="book-desc">The definitive guide to entering the AI industry — covering the AI landscape, essential technical skills, building AI products, research pathways, and positioning yourself as an AI professional in 2025 and beyond.</div>
+          <div class="book-topics">
+            <span class="book-topic">AI Industry Map</span>
+            <span class="book-topic">ML Fundamentals</span>
+            <span class="book-topic">AI Product Building</span>
+            <span class="book-topic">Research Pathways</span>
+          </div>
+          <div class="book-cta">Join the Waitlist →</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ CONTACT ══ -->
+<section id="contact" class="section">
+  <div class="wrap">
+    <div class="contact-inner reveal">
+      <div class="contact-pre">Get in Touch</div>
+      <h2 class="contact-heading">Let's build<br/>something <em>remarkable.</em></h2>
+      <p class="contact-sub">Whether you need an AI system designed, a SaaS product engineered, data analysed, or strategic direction — I'm open to collaborations, consulting engagements, and interesting problems.</p>
+      <div class="contact-links">
+        <a href="/cdn-cgi/l/email-protection#3159545d5d5e715449505c415d541f525e5c" class="contact-link primary">Send a Message</a>
+        <a href="#" class="contact-link">LinkedIn</a>
+        <a href="#" class="contact-link">GitHub</a>
+        <a href="#" class="contact-link">Twitter / X</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">PSX<span>::</span>Portfolio — AI Engineer · SaaS Builder</div>
+    <div class="footer-copy">© 2025 · Built with precision</div>
+  </div>
+</footer>
+
+<!-- ══ MODAL ══ -->
+<div id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-box">
+    <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    <div class="modal-bar" id="modal-bar"></div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ── CURSOR ──
+const cur=document.getElementById('cursor');
+const trail=document.getElementById('cursor-trail');
+let mx=0,my=0,tx=0,ty=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cur.style.left=mx+'px';cur.style.top=my+'px';
+});
+function animTrail(){
+  tx+=(mx-tx)*.1;ty+=(my-ty)*.1;
+  trail.style.left=tx+'px';trail.style.top=ty+'px';
+  requestAnimationFrame(animTrail);
+}
+animTrail();
+
+// ── CANVAS GRID ──
+const canvas=document.getElementById('grid-canvas');
+const ctx=canvas.getContext('2d');
+function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+resizeCanvas();
+window.addEventListener('resize',resizeCanvas);
+function drawGrid(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const t=Date.now()/80000;
+  ctx.strokeStyle='rgba(0,229,200,0.018)';ctx.lineWidth=.5;
+  const sz=72;
+  for(let x=-sz+((t*sz)%sz);x<canvas.width;x+=sz){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,canvas.height);ctx.stroke();}
+  for(let y=-sz+((t*sz)%sz);y<canvas.height;y+=sz){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(canvas.width,y);ctx.stroke();}
+  requestAnimationFrame(drawGrid);
+}
+drawGrid();
+
+// ── TICKER ──
+const tickerItems=['AI System Design','SaaS Engineering','Panel Econometrics','GPT-4 Integration','Market Research','Data Analytics','Technical Writing','Financial ML','Synthetic Data','Strategic Consulting','Product Architecture','Academic Research'];
+const track=document.getElementById('ticker-track');
+const html=tickerItems.map(t=>`<span class="ticker-item"><span class="ticker-dot">◆</span>${t}</span>`).join('');
+track.innerHTML=html+html;
+
+// ── SCROLL REVEAL ──
+document.body.classList.add('js-loaded');
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');}});
+},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+// ── MODAL DATA ──
+const PRODUCTS={
+  panelstatx:{
+    name:'PanelStatX',cat:'Panel Regression Analysis Platform',
+    status:'live',color:'#00e5c8',
+    desc:'PanelStatX is a production-grade econometric analysis platform delivering Fixed Effects, Random Effects, First-Difference, and Pooled OLS estimation — all from a single intuitive interface. Designed for researchers, economists, and data scientists who need rigorous panel regression without the complexity of traditional software.',
+    features:[
+      'Four panel estimators: Fixed Effects (Two-Way), Random Effects (GLS/Swamy-Arora), First-Difference, and Pooled OLS',
+      'Automatic Hausman specification test — formally selects FE vs RE with χ² statistic and p-value',
+      'Full diagnostic suite: Breusch-Pagan heteroskedasticity, Jarque-Bera normality, Durbin-Watson autocorrelation',
+      'GPT-4 powered AI explainer — one-click structured economic interpretation of results',
+      'Professional DOCX report export with cover page, coefficient tables, diagnostics, and AI write-up',
+      'Google Sheets-backed access key and credit system for controlled team access',
+      'Interactive entity cross-section plots and coefficient visualisations',
+    ],
+    stack:['Python','Streamlit','NumPy','SciPy','Plotly','OpenAI GPT-4o','gspread','python-docx'],
+  },
+  datasynthx:{
+    name:'DataSynthX',cat:'Synthetic Data Generation Platform',
+    status:'live',color:'#8b7cf8',
+    desc:'DataSynthX is an AI-powered synthetic data generation platform for researchers, ML engineers, and data scientists who need high-fidelity, privacy-preserving datasets. Define your schema, set statistical constraints, and generate thousands of statistically faithful records in seconds.',
+    features:[
+      'Schema-aware synthetic data generation — define column types, distributions, and relationships',
+      'Statistical fidelity controls — match mean, variance, correlation structure of reference datasets',
+      'Privacy-preserving design — no real data leakage, GDPR-friendly by architecture',
+      'Multi-format export — CSV, Excel, JSON for direct pipeline integration',
+      'Batch generation at 100K+ record scale with progress tracking',
+      'AI-assisted schema inference from uploaded sample data',
+    ],
+    stack:['Python','Streamlit','Pandas','NumPy','Faker','AI/ML','Statistics'],
+  },
+  achievit:{
+    name:'Achievit',cat:'Goal Tracking & Productivity SaaS',
+    status:'live',color:'#f5a623',
+    desc:'Achievit is an intelligent goal-tracking and productivity platform built for ambitious professionals. Set goals, decompose them into milestones with AI assistance, track daily progress, and visualise performance trends — all in a clean, distraction-free interface.',
+    features:[
+      'AI-assisted goal decomposition — break any objective into structured, time-bound milestones',
+      'Daily habit and progress tracking with streak mechanics and visual dashboards',
+      'Performance analytics — completion rates, momentum scoring, and trend analysis',
+      'Goal categories: Career, Learning, Health, Projects, Financial',
+      'Weekly AI summary reports with personalised recommendations',
+      'Team collaboration mode for shared goal accountability',
+    ],
+    stack:['Full-Stack','AI/ML','Analytics','Python','Streamlit'],
+  },
+  captai:{
+    name:'CaptAI',cat:'AI Captioning & Content Intelligence',
+    status:'live',color:'#00e5c8',
+    desc:'CaptAI is a production-grade AI captioning and content intelligence tool. Feed it audio, video, or text — and it returns context-aware captions, transcripts, and intelligent summaries. Built for content creators, researchers, and production teams.',
+    features:[
+      'Multi-format input: audio files, video, YouTube URLs, and raw text',
+      'Whisper-powered transcription with speaker detection and timestamps',
+      'Context-aware caption generation — adapts tone for social, academic, or broadcast use',
+      'Automated content summarisation at sentence, paragraph, and document level',
+      'Keyword extraction, topic modelling, and sentiment tagging',
+      'Bulk processing API for production-scale captioning workflows',
+    ],
+    stack:['Python','Whisper','OpenAI','NLP','Streamlit','API'],
+  },
+  finriskml:{
+    name:'FinRisk-ML',cat:'Financial Risk Intelligence Platform',
+    status:'live',color:'#f06292',
+    desc:'FinRisk-ML is a machine learning-powered financial risk assessment platform. It combines credit risk modelling, portfolio risk analysis, and scenario simulation with full explainability — giving financial analysts and risk officers the interpretability they need to act with confidence.',
+    features:[
+      'Credit default prediction using XGBoost with 91%+ AUC on benchmark datasets',
+      'SHAP-powered explainability — understand exactly why each prediction was made',
+      'Portfolio risk scoring: VaR, CVaR, maximum drawdown, and stress testing',
+      'Monte Carlo scenario simulation for forward-looking risk assessment',
+      'Automated risk report generation with regulatory-friendly audit trails',
+      'Live data ingestion and model retraining pipeline for continuous risk monitoring',
+    ],
+    stack:['Python','XGBoost','SHAP','Pandas','Plotly','Streamlit','Finance','ML'],
+  },
+};
+
+function openModal(id){
+  const p=PRODUCTS[id];if(!p)return;
+  document.getElementById('modal-bar').style.background=p.color;
+  document.getElementById('modal-body').innerHTML=`
+    <div class="modal-badge ${p.status}"><span class="sdot"></span>${p.status==='live'?'Live Product':'In Development'}</div>
+    <div class="modal-name">${p.name}</div>
+    <div class="modal-cat">${p.cat}</div>
+    <div class="modal-desc">${p.desc}</div>
+    <div class="modal-section-title">Key Features</div>
+    <div class="modal-features">${p.features.map(f=>`<div class="modal-feat">${f}</div>`).join('')}</div>
+    <div class="modal-section-title">Tech Stack</div>
+    <div class="modal-stack">${p.stack.map(s=>`<span class="stack-tag">${s}</span>`).join('')}</div>
+    <div class="modal-actions">
+      <button class="btn-primary" style="font-size:11px;padding:11px 24px">View Live Product</button>
+      <button class="btn-ghost" style="font-size:11px;padding:11px 24px">Case Study</button>
+    </div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(e){if(e.target===document.getElementById('modal-overlay'))closeModalDirect();}
+function closeModalDirect(){
+  document.getElementById('modal-overlay').classList.remove('open')
