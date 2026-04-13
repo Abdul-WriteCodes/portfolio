@@ -1040,6 +1040,7 @@ document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
 const PRODUCTS={
   panelstatx:{
     name:'PanelStatX',cat:'Panel Regression Analysis Platform',
+    url: 'https://panelstatx-eu.streamlit.app/',
     status:'live',color:'#00e5c8',
     desc:'PanelStatX is a production-grade econometric analysis platform delivering Fixed Effects, Random Effects, First-Difference, and Pooled OLS estimation — all from a single intuitive interface. Designed for researchers, economists, and data scientists who need rigorous panel regression without the complexity of traditional software.',
     features:[
@@ -1055,6 +1056,7 @@ const PRODUCTS={
   },
   datasynthx:{
     name:'DataSynthX',cat:'Synthetic Data Generation Platform',
+    url: 'https://datasynthxt.streamlit.app/',
     status:'live',color:'#8b7cf8',
     desc:'DataSynthX is an AI-powered synthetic data generation platform for researchers, ML engineers, and data scientists who need high-fidelity, privacy-preserving datasets. Define your schema, set statistical constraints, and generate thousands of statistically faithful records in seconds.',
     features:[
@@ -1069,6 +1071,7 @@ const PRODUCTS={
   },
   achievit:{
     name:'Achievit',cat:'Goal Tracking & Productivity SaaS',
+    url: 'https://achievit.streamlit.app/',
     status:'live',color:'#f5a623',
     desc:'Achievit is an intelligent goal-tracking and productivity platform built for ambitious professionals. Set goals, decompose them into milestones with AI assistance, track daily progress, and visualise performance trends — all in a clean, distraction-free interface.',
     features:[
@@ -1083,6 +1086,7 @@ const PRODUCTS={
   },
   captai:{
     name:'CaptAI',cat:'AI Captioning & Content Intelligence',
+    url: 'https://captai.streamlit.app/',
     status:'live',color:'#00e5c8',
     desc:'CaptAI is a production-grade AI captioning and content intelligence tool. Feed it audio, video, or text — and it returns context-aware captions, transcripts, and intelligent summaries. Built for content creators, researchers, and production teams.',
     features:[
@@ -1097,6 +1101,7 @@ const PRODUCTS={
   },
   finriskml:{
     name:'FinRisk-ML',cat:'Financial Risk Intelligence Platform',
+    url: 'https://finrisk-ml.streamlit.app/',
     status:'live',color:'#f06292',
     desc:'FinRisk-ML is a machine learning-powered financial risk assessment platform. It combines credit risk modelling, portfolio risk analysis, and scenario simulation with full explainability — giving financial analysts and risk officers the interpretability they need to act with confidence.',
     features:[
@@ -1124,7 +1129,7 @@ function openModal(id){
     <div class="modal-section-title">Tech Stack</div>
     <div class="modal-stack">${p.stack.map(s=>`<span class="stack-tag">${s}</span>`).join('')}</div>
     <div class="modal-actions">
-      <button class="btn-primary" style="font-size:11px;padding:11px 24px">View Live Product</button>
+      <a href="${p.url}" target="_blank" rel="noopener" class="btn-primary" style="...">View Live Product</a>
       <button class="btn-ghost" style="font-size:11px;padding:11px 24px">Case Study</button>
     </div>`;
   document.getElementById('modal-overlay').classList.add('open');
